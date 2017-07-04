@@ -19,5 +19,5 @@ data class Error(@SerializedName("field") val field: String?,
                  @SerializedName("code") val code: Int?,
                  @SerializedName("value") val value: Any?)
 
-data class SearchUser(@SerializedName("nickname") val nickName: String,
-                      @SerializedName("account_id") val accountId: Int)
+data class SearchUser(@SerializedName("account_id") val accountId: Int,
+                      @SerializedName("nickname") val nickName: String)

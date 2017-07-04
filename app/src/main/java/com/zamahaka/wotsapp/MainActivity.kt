@@ -3,11 +3,13 @@ package com.zamahaka.wotsapp
 import android.arch.lifecycle.LifecycleActivity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.arch.persistence.room.Room
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import com.zamahaka.wotsapp.data.local.SearchUsersDatabase
 import com.zamahaka.wotsapp.data.remote.MyRetrofit
 import com.zamahaka.wotsapp.data.remote.model.SearchUser
 import com.zamahaka.wotsapp.data.remote.model.UserSearchResponse
@@ -18,9 +20,10 @@ import retrofit2.Response
 
 class MainActivity : LifecycleActivity() {
 
-    override fun onStart() {
-        super.onStart()
-        Log.d("myLog", "onStart: ")
+    val searchUsersDb: SearchUsersDatabase by lazy {
+        Room.databaseBuilder(
+                applicationContext, SearchUsersDatabase::class.java, "Wot.db")
+                .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +37,8 @@ class MainActivity : LifecycleActivity() {
                 Observer<List<SearchUser>> {
                     txtResponse.text = it.toString()
                     Log.d("myLog", "observed: ")
+
+                    it?.let { searchUsersDb.usersDao().saveUsers(it) }
                 })
 
         edit.addTextChangedListener(object : TextWatcher {
@@ -42,6 +47,11 @@ class MainActivity : LifecycleActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("myLog", "onStart: ")
     }
 
     override fun onResume() {
