@@ -10,6 +10,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import com.zamahaka.wotsapp.data.local.SearchUsersDatabase
+import com.zamahaka.wotsapp.data.local.entity.SearchUserEntity
 import com.zamahaka.wotsapp.data.remote.MyRetrofit
 import com.zamahaka.wotsapp.data.remote.model.SearchUser
 import com.zamahaka.wotsapp.data.remote.model.UserSearchResponse
@@ -38,7 +39,7 @@ class MainActivity : LifecycleActivity() {
                     txtResponse.text = it.toString()
                     Log.d("myLog", "observed: ")
 
-                    it?.let { searchUsersDb.usersDao().saveUsers(it) }
+                    it?.let { searchUsersDb.usersDao().saveUsers(it.map { SearchUserEntity(it.accountId, it.nickName) }) }
                 })
 
         edit.addTextChangedListener(object : TextWatcher {

@@ -9,5 +9,5 @@ import com.google.gson.annotations.SerializedName
  */
 
 @Entity(tableName = "searchUsers")
-class SearchUserEntity(@PrimaryKey @SerializedName("account_id") val accountId: Int,
-                       @SerializedName("nickname") val nickName: String)
+class SearchUserEntity(@PrimaryKey @SerializedName("account_id") var accountId: Int = 0,
+                       @SerializedName("nickname") var nickName: String = "")

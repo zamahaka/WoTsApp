@@ -6,7 +6,6 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import com.zamahaka.wotsapp.data.local.entity.SearchUserEntity
-import com.zamahaka.wotsapp.data.remote.model.SearchUser
 
 /**
  * Created by Ura on 04.07.2017.
@@ -15,12 +14,12 @@ import com.zamahaka.wotsapp.data.remote.model.SearchUser
 interface SearchUserDao {
 
     @Query("SELECT * FROM searchUsers")
-    fun getUsers(): LiveData<List<SearchUser>>
+    fun getUsers(): LiveData<List<SearchUserEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveUsers(users: List<SearchUser>)
+    fun saveUsers(users: List<SearchUserEntity>)
 
-    @Query("SELECT * FROM searchUsers WHERE nickName LIKE ^nickName")
+    @Query("SELECT * FROM searchUsers WHERE nickName LIKE :nickName")
     fun findUser(nickName: String): LiveData<SearchUserEntity>
 
 }

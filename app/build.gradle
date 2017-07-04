@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -42,8 +41,8 @@ dependencies {
 
     implementation "android.arch.lifecycle:runtime:$archVersion"
     implementation "android.arch.lifecycle:extensions:$archVersion"
-    annotationProcessor "android.arch.lifecycle:compiler:$archVersion"
+    kapt "android.arch.lifecycle:compiler:$archVersion"
     implementation "android.arch.persistence.room:runtime:$archVersion"
-    annotationProcessor  "android.arch.persistence.room:compiler:$archVersion"
+    kapt  "android.arch.persistence.room:compiler:$archVersion"
 
 }
