@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">WoT(s)App</string>
     <string name="user_name">User name</string>
+    <string name="show_from_database">Show from database</string>
 </resources>
