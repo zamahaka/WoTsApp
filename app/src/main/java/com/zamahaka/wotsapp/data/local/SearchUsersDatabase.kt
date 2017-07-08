@@ -10,5 +10,5 @@ import com.zamahaka.wotsapp.data.local.entity.SearchUserEntity
  */
 @Database(entities = arrayOf(SearchUserEntity::class), version = 1, exportSchema = false)
 abstract class SearchUsersDatabase : RoomDatabase() {
-    abstract fun usersDao(): SearchUserDao
+    abstract val usersDao: SearchUserDao
 }

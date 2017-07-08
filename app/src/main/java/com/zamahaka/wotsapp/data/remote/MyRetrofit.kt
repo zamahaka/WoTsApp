@@ -11,7 +11,7 @@ object MyRetrofit {
 
     private val BASE_URL = "https://api.worldoftanks.ru/wot/"
 
-    val wotApi by lazy { retrofit.create(WotApi::class.java) }
+    val wotApi: WotApi by lazy { retrofit.create(WotApi::class.java) }
 
     private val retrofit by lazy {
         Retrofit.Builder()

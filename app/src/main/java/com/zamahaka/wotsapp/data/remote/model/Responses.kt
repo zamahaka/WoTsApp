@@ -12,12 +12,4 @@ open class Response<out T>(@SerializedName("status") val status: String? = null,
 
 class UserSearchResponse : Response<List<SearchUser>>()
 
-data class Meta(@SerializedName("count") val count: Int)
-
-data class Error(@SerializedName("field") val field: String?,
-                 @SerializedName("message") val message: String?,
-                 @SerializedName("code") val code: Int?,
-                 @SerializedName("value") val value: Any?)
-
-data class SearchUser(@SerializedName("account_id") val accountId: Int,
-                      @SerializedName("nickname") val nickName: String)
+class TankopediaInfoResponse : Response<TankopediaInfo>()

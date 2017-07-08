@@ -1,6 +1,8 @@
 package com.zamahaka.wotsapp
 
-import android.arch.lifecycle.*
+import android.arch.lifecycle.LifecycleRegistry
+import android.arch.lifecycle.LifecycleRegistryOwner
+import android.arch.lifecycle.ViewModelProviders
 import android.arch.persistence.room.Room
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -10,13 +12,14 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.zamahaka.wotsapp.data.local.SearchUsersDatabase
-import com.zamahaka.wotsapp.data.local.entity.SearchUserEntity
-import com.zamahaka.wotsapp.data.remote.model.SearchUser
+import com.zamahaka.wotsapp.data.remote.MyRetrofit
+import com.zamahaka.wotsapp.data.remote.model.TankopediaInfoResponse
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.bg
+import retrofit2.Call
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
@@ -35,17 +38,17 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
         viewModel.mUsers.observe(this) {
             txtResponse.text = it.toString()
             Log.d("myLog", "observed: ")
-
-            async(UI) {
-                bg {
-                    it?.let {
-                        searchUsersDb.usersDao().saveUsers(it.map { SearchUserEntity(it.accountId, it.nickName) })
-                    }
-                }.await()
-            }
         }
 
-        searchUsersDb.usersDao().getUsers().observe(this) { txtDatabase.text = it.toString() }
+        MyRetrofit.wotApi.tankopediaInfo().enqueue(response = {
+            call: Call<TankopediaInfoResponse>, response: Response<TankopediaInfoResponse> ->
+            txtResponse.text = response.body()?.data.toString()
+        }, failure = {
+            call: Call<TankopediaInfoResponse>, throwable: Throwable? ->
+            txtResponse.text = throwable?.message
+        })
+
+        searchUsersDb.usersDao.getUsers().observe(this) { txtDatabase.text = it.toString() }
 
         edit.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) = viewModel.setInput(s.toString())
@@ -63,7 +66,7 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.database -> {
             async(UI) {
-                val users = bg { searchUsersDb.usersDao().getUsers().value ?: listOf() }
+                val users = bg { searchUsersDb.usersDao.getUsers().value ?: listOf() }
                 txtResponse.text = users.await().toString()
             }
             true
