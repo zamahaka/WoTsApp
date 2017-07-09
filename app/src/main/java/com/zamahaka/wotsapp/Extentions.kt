@@ -24,6 +24,6 @@ fun <T> Call<T>.enqueue(response: (Call<T>, Response<T>) -> Unit,
 
 inline fun <T> Call<T>.enqueue(crossinline response: (Call<T>, Response<T>) -> Unit) =
         enqueue(object : Callback<T> {
-            override fun onFailure(call: Call<T>, t: Throwable?) {}
+            override fun onFailure(call: Call<T>, t: Throwable) {}
             override fun onResponse(call: Call<T>, r: Response<T>) = response(call, r)
         })

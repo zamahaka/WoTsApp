@@ -37,7 +37,12 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
         val viewModel = ViewModelProviders.of(this).get(SearchUsersViewModel::class.java)
         viewModel.mUsers.observe(this) {
             txtResponse.text = it.toString()
-            Log.d("myLog", "observed: ")
+            Log.d("myLog", "users observed")
+        }
+
+        viewModel.mError.observe(this) {
+            txtResponse.text = it?.message.toString()
+            Log.d("myLog", "error observed")
         }
 
         MyRetrofit.wotApi.tankopediaInfo().enqueue(response = {
