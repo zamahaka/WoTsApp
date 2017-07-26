@@ -13,13 +13,10 @@ import android.view.Menu
 import android.view.MenuItem
 import com.zamahaka.wotsapp.data.local.SearchUsersDatabase
 import com.zamahaka.wotsapp.data.remote.MyRetrofit
-import com.zamahaka.wotsapp.data.remote.model.TankopediaInfoResponse
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.bg
-import retrofit2.Call
-import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
@@ -45,13 +42,10 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
             Log.d("myLog", "error observed")
         }
 
-        MyRetrofit.wotApi.tankopediaInfo().enqueue(response = {
-            call: Call<TankopediaInfoResponse>, response: Response<TankopediaInfoResponse> ->
-            txtResponse.text = response.body()?.data.toString()
-        }, failure = {
-            call: Call<TankopediaInfoResponse>, throwable: Throwable? ->
-            txtResponse.text = throwable?.message
-        })
+        MyRetrofit.wotApi.tankopediaInfo().enqueue {
+            onResponse = { txtResponse.text = it.body()?.data.toString() }
+            onFailure = { txtResponse.text = it.message }
+        }
 
         searchUsersDb.usersDao.getUsers().observe(this) { txtDatabase.text = it.toString() }
 
