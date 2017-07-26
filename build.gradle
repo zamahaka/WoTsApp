@@ -8,7 +8,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-alpha5'
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha8'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -30,11 +30,11 @@ task clean(type: Delete) {
 }
 
 ext {
-    supportLibVersion = '25.4.0'
+    supportLibVersion = '26.0.0'
     retrofitVersion = '2.1.0'
     gsonConverterVersion = '2.1.0'
     picassoVersion = '2.5.2'
-    archVersion = '1.0.0-alpha3'
+    archVersion = '1.0.0-alpha6'
     anko_version = '0.10.1'
     daggerVersion = '2.11'
 }

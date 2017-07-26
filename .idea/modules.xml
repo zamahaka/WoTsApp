@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WoTsApp.iml" filepath="$PROJECT_DIR$/WoTsApp.iml" />
+      <module fileurl="file://C:\Users\Yura Stetsyc\Android\Projects\WoTsApp\WoTsApp.iml" filepath="C:\Users\Yura Stetsyc\Android\Projects\WoTsApp\WoTsApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Yura Stetsyc\Android\Projects\WoTsApp\app\app.iml" filepath="C:\Users\Yura Stetsyc\Android\Projects\WoTsApp\app\app.iml" />
     </modules>
   </component>
 </project>
