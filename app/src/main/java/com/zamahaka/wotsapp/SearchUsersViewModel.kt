@@ -3,33 +3,52 @@ package com.zamahaka.wotsapp
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
+import android.arch.persistence.room.Room
 import android.util.Log
+import com.zamahaka.wotsapp.data.local.SearchUsersDatabase
+import com.zamahaka.wotsapp.data.local.entity.SearchUserEntity
 import com.zamahaka.wotsapp.data.remote.MyRetrofit
-import com.zamahaka.wotsapp.data.remote.model.SearchUser
-import com.zamahaka.wotsapp.data.remote.model.UserSearchResponse
-import retrofit2.Call
-import retrofit2.Response
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.coroutines.experimental.bg
 
 /**
  * Created by Ura on 03.07.2017.
  */
 class SearchUsersViewModel(application: Application) : AndroidViewModel(application) {
-    val mUsers = MutableLiveData<List<SearchUser>>()
-    val mError = MutableLiveData<Throwable>()
+    val usersDao by lazy {
+        Room.databaseBuilder(getApplication(), SearchUsersDatabase::class.java, "Wot.db").build().usersDao
+    }
+
+    val users = usersDao.getUsers()
+    val error = MutableLiveData<Throwable>()
 
     fun setInput(userName: String) = if (userName.length >= 3) {
-        MyRetrofit.wotApi.searchAccounts(userName).enqueue(response = { _, response ->
-            val data = response.body()?.data
+        MyRetrofit.wotApi.searchAccounts(userName).enqueue {
+            onResponse {
+                val data = it.body()?.data
 
-            data?.let { mUsers.value = it } ?: run { mError.value = Throwable(response.body()?.error.toString()) }
+                data?.let {
+                    bg { usersDao.saveUsers(it.map { SearchUserEntity(it.accountId, it.nickName) }) }
+                } ?: run { error.value = Throwable(it.body()?.error.toString()) }
 
-            Log.d("myLog", "onResponse: data set")
-        }, failure = { _, throwable ->
-            mError.value = throwable
+                Log.d("myLog", "onResponse: data set")
+            }
 
-            Log.d("myLog", "onFailure: ")
-        })
-    } else mError.value = Throwable("Min username length is 3")
+            onFailure {
+                error.value = it
+
+                Log.d("myLog", "onFailure: ")
+            }
+        }
+    } else error.value = Throwable("Min username length is 3")
+
+    fun onOptionsItemSelected() {
+        async(UI) {
+            val users = bg { usersDao.getUsers().value ?: listOf() }
+            error.value = Throwable(users.await().toString())
+        }
+    }
 
     override fun onCleared() {
         Log.d("myLog", "onCleared: ")

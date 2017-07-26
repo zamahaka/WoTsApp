@@ -13,7 +13,7 @@ import com.zamahaka.wotsapp.data.local.entity.SearchUserEntity
 @Dao
 interface SearchUserDao {
 
-    @Query("SELECT * FROM searchUsers ORDER BY nickName")
+    @Query("SELECT * FROM searchUsers ORDER BY accountId")
     fun getUsers(): LiveData<List<SearchUserEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

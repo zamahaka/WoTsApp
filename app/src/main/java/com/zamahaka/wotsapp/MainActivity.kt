@@ -3,7 +3,6 @@ package com.zamahaka.wotsapp
 import android.arch.lifecycle.LifecycleRegistry
 import android.arch.lifecycle.LifecycleRegistryOwner
 import android.arch.lifecycle.ViewModelProviders
-import android.arch.persistence.room.Room
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
@@ -11,19 +10,11 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.zamahaka.wotsapp.data.local.SearchUsersDatabase
-import com.zamahaka.wotsapp.data.remote.MyRetrofit
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import org.jetbrains.anko.coroutines.experimental.bg
 
 class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
-    val searchUsersDb: SearchUsersDatabase by lazy {
-        Room.databaseBuilder(applicationContext, SearchUsersDatabase::class.java, "Wot.db")
-                .build()
-    }
+    private val viewModel by lazy { ViewModelProviders.of(this).get(SearchUsersViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("myLog", "onCreate: ")
@@ -31,23 +22,15 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val viewModel = ViewModelProviders.of(this).get(SearchUsersViewModel::class.java)
-        viewModel.mUsers.observe(this) {
+        viewModel.users.observe(this) {
             txtResponse.text = it.toString()
             Log.d("myLog", "users observed")
         }
 
-        viewModel.mError.observe(this) {
+        viewModel.error.observe(this) {
             txtResponse.text = it?.message.toString()
             Log.d("myLog", "error observed")
         }
-
-        MyRetrofit.wotApi.tankopediaInfo().enqueue {
-            onResponse = { txtResponse.text = it.body()?.data.toString() }
-            onFailure = { txtResponse.text = it.message }
-        }
-
-        searchUsersDb.usersDao.getUsers().observe(this) { txtDatabase.text = it.toString() }
 
         edit.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) = viewModel.setInput(s.toString())
@@ -62,12 +45,9 @@ class MainActivity : AppCompatActivity(), LifecycleRegistryOwner {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.database -> {
-            async(UI) {
-                val users = bg { searchUsersDb.usersDao.getUsers().value ?: listOf() }
-                txtResponse.text = users.await().toString()
-            }
+            viewModel.onOptionsItemSelected()
             true
         }
         else -> super.onOptionsItemSelected(item)

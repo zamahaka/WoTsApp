@@ -17,7 +17,7 @@ data class Error(@SerializedName("field") val field: String,
 data class SearchUser(@SerializedName("account_id") val accountId: Int,
                       @SerializedName("nickname") val nickName: String)
 
-data class TankopediaInfo(@SerializedName("game_version") val gameVersion: Double,
+data class TankopediaInfo(@SerializedName("game_version") val gameVersion: String,
                           @SerializedName("languages") val languages: Map<CountryCode, Language>,
                           @SerializedName("tanks_updated_at") val tanksUpdatedAt: Long,
                           @SerializedName("vehicle_crew_roles") val vehicleCrewRoles: Map<CrewRole, String>,
