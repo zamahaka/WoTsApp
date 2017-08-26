@@ -1,6 +1,7 @@
 package com.zamahaka.wotsapp.data.remote
 
 import com.zamahaka.wotsapp.data.remote.model.TankopediaInfoResponse
+import com.zamahaka.wotsapp.data.remote.model.TechnicsResponse
 import com.zamahaka.wotsapp.data.remote.model.UserSearchResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -21,4 +22,9 @@ interface WotApi {
     @GET("encyclopedia/info/")
     fun tankopediaInfo(@Query("fields") fields: String = "",
                        @Query("language") language: String = "en"): Call<TankopediaInfoResponse>
+
+    @GET("encyclopedia/vehicles/")
+    fun technics(@Query("fields") fields: String = "name, images",
+                 @Query("language") language: String = "en",
+                 @Query("limit") limit: Int = 10): Call<TechnicsResponse>
 }

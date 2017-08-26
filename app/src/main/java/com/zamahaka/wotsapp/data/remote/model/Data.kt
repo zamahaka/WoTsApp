@@ -27,3 +27,10 @@ data class TankopediaInfo(@SerializedName("game_version") val gameVersion: Strin
 
 data class AchievementSectionData(@SerializedName("name") val name: String,
                                   @SerializedName("order") val order: Int)
+
+data class TankData(@SerializedName("name") val name: Url?,
+                    @SerializedName("images") val images: ImageData?)
+
+data class ImageData(@SerializedName("small_icon") val smallIcon: Url?,
+                     @SerializedName("contour_icon") val contourIcon: Url?,
+                     @SerializedName("big_icon") val bigIcon: Url?)

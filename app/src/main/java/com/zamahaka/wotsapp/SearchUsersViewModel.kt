@@ -16,7 +16,7 @@ import org.jetbrains.anko.coroutines.experimental.bg
  * Created by Ura on 03.07.2017.
  */
 class SearchUsersViewModel(application: Application) : AndroidViewModel(application) {
-    val usersDao by lazy {
+    private val usersDao by lazy {
         Room.databaseBuilder(getApplication(), SearchUsersDatabase::class.java, "Wot.db").build().usersDao
     }
 

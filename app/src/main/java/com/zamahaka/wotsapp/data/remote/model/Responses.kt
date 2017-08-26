@@ -13,3 +13,5 @@ open class Response<out T>(@SerializedName("status") val status: String? = null,
 class UserSearchResponse : Response<List<SearchUser>>()
 
 class TankopediaInfoResponse : Response<TankopediaInfo>()
+
+class TechnicsResponse : Response<Map<Int, TankData>>()

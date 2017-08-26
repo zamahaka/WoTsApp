@@ -10,3 +10,4 @@ typealias CrewRole = String
 typealias Nation = String
 typealias VehicleType = String
 typealias AchievementSection = String
+typealias Url = String
